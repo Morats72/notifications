@@ -20,7 +20,10 @@ app.use((req, res, next) => {
 // Set these as environment variables on Render — do not hardcode.
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'mailto:admin@example.com';
+let CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'mailto:admin@example.com';
+if (!/^mailto:/i.test(CONTACT_EMAIL) && !/^https?:\/\//i.test(CONTACT_EMAIL)) {
+  CONTACT_EMAIL = 'mailto:' + CONTACT_EMAIL;
+}
 
 if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
   console.error('Missing VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY env vars. Run: npm run generate-vapid');
