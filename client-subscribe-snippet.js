@@ -3,7 +3,7 @@
 // the ONLY new piece needed on the app side for this round — schedule
 // syncing to the server comes next once test pushes are confirmed working.
 
-const PUSH_SERVER_URL = 'https://YOUR-APP-NAME.onrender.com'; // set after Render deploy
+const PUSH_SERVER_URL = 'https://notifications-rq0q.onrender.com'; // set after Render deploy
 const PUSH_PUBLIC_KEY = 'BBp2xFZROQn-5tPprE_hkwEvJa_WZxMPwivxTqIE7eWZsclVirK4o2bmuaMQFJ41fW5HPrc-TyTMkZ6i01oE7Zg';        // from generate-vapid.js output
 
 function urlBase64ToUint8Array(base64String) {
