@@ -119,12 +119,24 @@ app.post('/api/test-push', async (req, res) => {
 });
 
 // ── Scheduler: checks every minute for doses due right now ──
+// IMPORTANT: Render's server clock runs in UTC by default, not the
+// user's local timezone. All "now" comparisons must be computed in
+// the user's actual timezone or doses fire at the wrong time (or not
+// at all, if the offset pushes past midnight). Set APP_TIMEZONE on
+// Render if you're ever outside Central time.
+const APP_TIMEZONE = process.env.APP_TIMEZONE || 'America/Chicago';
+
 function todayKey() {
-  return new Date().toISOString().split('T')[0];
+  return new Intl.DateTimeFormat('en-CA', { timeZone: APP_TIMEZONE, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 }
 function nowHHMM() {
-  const d = new Date();
-  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: APP_TIMEZONE, hour: '2-digit', minute: '2-digit', hour12: false
+  }).formatToParts(new Date());
+  let h = parts.find(p => p.type === 'hour').value;
+  const m = parts.find(p => p.type === 'minute').value;
+  if (h === '24') h = '00'; // ICU quirk: midnight can come back as "24"
+  return h + ':' + m;
 }
 
 async function checkAndFireDueDoses() {
